@@ -28,7 +28,8 @@ class MealViewController: UIViewController, UITextFieldDelegate, UINavigationCon
         // Handle the text field's user input through delegate callbacks
         nameTextField.delegate = self
         
-
+        // Enable the save button only if the text field has a valid Meal name
+        updateSaveButtonState()
     }
     
     //MARK: UITextFieldDelegate
@@ -39,10 +40,13 @@ class MealViewController: UIViewController, UITextFieldDelegate, UINavigationCon
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) { //textFieldDidEndEditing is called when the mealNameLabel text field resigns it's first-responder status
+        updateSaveButtonState()
+        navigationItem.title = textField.text
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         // Disable the Save button while editing
+        saveButton.isEnabled = false // This makes sure that, in the case that we are editing a meal that already has a name, the button is disabled for the duration of text input.
     }
     
     
@@ -88,6 +92,15 @@ class MealViewController: UIViewController, UITextFieldDelegate, UINavigationCon
         imagePickerController.delegate = self // makes sure ViewController is notified when user picks an image
         //present the controller
         present(imagePickerController, animated: true, completion: nil) // we do this with animation, and do not need to call a completion handler, so we write 'nil'
+    }
+    
+    //MARK: Private methods
+    
+    
+    private func updateSaveButtonState() {
+        // Disable the Save button if the text field is empty
+        let text = nameTextField.text ?? ""
+        saveButton.isEnabled = !text.isEmpty
     }
     
 
