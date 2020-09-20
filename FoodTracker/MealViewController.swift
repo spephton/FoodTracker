@@ -41,6 +41,10 @@ class MealViewController: UIViewController, UITextFieldDelegate, UINavigationCon
     func textFieldDidEndEditing(_ textField: UITextField) { //textFieldDidEndEditing is called when the mealNameLabel text field resigns it's first-responder status
     }
     
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        // Disable the Save button while editing
+    }
+    
     
     //MARK: UIImagePickerControllerDelegate
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {

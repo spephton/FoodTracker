@@ -105,7 +105,7 @@ class MealTableViewController: UITableViewController {
     
     //MARK: Actions
     @IBAction func unwindToMealList(sender: UIStoryboardSegue) {
-        /* Here, we use the *optional type cast operator* `as?` to try to *downcast* the segue's source view controller to a MealViewController instance. This is necessary because sender.sourceViewController is a type of UIViewController, but we want to work with a MealViewController.
+        /* Here, we use the *optional type cast operator* `as?` to try to *downcast* the segue's source view controller to a MealViewController instance. This is necessary because sender.source is a type of UIViewController, but we want to work with a MealViewController. The reason sender.source is a UIViewController is because sender is of the class UIStoryboardSegue, which we haven't customised to accept a MealViewController. 
          
             Additionally, we check that sourceViewController.meal is non-nil, and if it is non-nil, meaning that there's a meal property defined in the sourceViewController, we assign that property to our constant `meal`.
          */
