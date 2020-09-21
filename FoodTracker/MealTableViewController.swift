@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import os.log
+
 
 class MealTableViewController: UITableViewController {
     
@@ -93,29 +95,64 @@ class MealTableViewController: UITableViewController {
     }
     */
 
-    /*
+    
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destination.
         // Pass the selected object to the new view controller.
+        
+        super.prepare(for: segue, sender: sender)
+        
+        
+        
+        switch(segue.identifier ?? "") {
+        case "AddItem":
+            os_log("Adding a new meal", log: OSLog.default, type: .debug)
+        case "ShowDetail":
+            guard let mealDetailViewController = segue.destination as? MealViewController else {
+                fatalError("Unexpected destination: \(segue.destination)")
+            }
+            
+            guard let selectedMealCell = sender as? MealTableViewCell else {
+                fatalError("Unexpected sender: " + String(describing: sender))
+            }
+            
+            guard let indexPath = tableView.indexPath(for: selectedMealCell) else {
+                fatalError("The selected cell is not being displayed by the table.")
+                
+            }
+            
+            let selectedMeal = meals[indexPath.row]
+            mealDetailViewController.meal = selectedMeal
+        default: fatalError("Unexpected Segue Identifier; \(String(describing: segue.identifier))")
+        }
+        
     }
-    */
+    
     
     //MARK: Actions
     @IBAction func unwindToMealList(sender: UIStoryboardSegue) {
-        /* Here, we use the *optional type cast operator* `as?` to try to *downcast* the segue's source view controller to a MealViewController instance. This is necessary because sender.source is a type of UIViewController, but we want to work with a MealViewController. The reason sender.source is a UIViewController is because sender is of the class UIStoryboardSegue, which we haven't customised to accept a MealViewController. 
+        /* Here, we use the *optional type cast operator* `as?` to try to *downcast* the segue's source view controller to a MealViewController instance. This is necessary because sender.source is a type of UIViewController, but we want to work with a MealViewController. The reason sender.source is a UIViewController is because sender is of the class UIStoryboardSegue, which we haven't customised to specify a MealViewController. 
          
             Additionally, we check that sourceViewController.meal is non-nil, and if it is non-nil, meaning that there's a meal property defined in the sourceViewController, we assign that property to our constant `meal`.
          */
         if let sourceViewController = sender.source as? MealViewController, let meal = sourceViewController.meal {
-            // our path to the new meal insertion in the table view. We'll add at the position meals.count, which should be one after the last item in the list (since addressing begins at zero and count begins at one), and section 0 since there is only one section.
-            let newIndexPath = IndexPath(row: meals.count, section: 0)
-            // add the new meal to the data model before adding it to the table view
-            meals.append(meal)
-            // add the meal to the tableView
-            tableView.insertRows(at: [newIndexPath], with: .automatic)
+            
+            //Check whether a row of the tableView is selected. If so, we're editing an existing meal. Load our edits to the table view. If not, the user has created a new meal, so we add it to the end of the table view
+            if let selectedIndexPaths = tableView.indexPathsForSelectedRows {
+                meals[selectedIndexPaths[0].row] = meal
+                tableView.reloadRows(at: selectedIndexPaths, with: .none)
+            } else {
+                
+                // our path to the new meal insertion in the table view. We'll add at the position meals.count, which should be one after the last item in the list (since addressing begins at zero and count begins at one), and section 0 since there is only one section.
+                let newIndexPath = IndexPath(row: meals.count, section: 0)
+                // add the new meal to the data model before adding it to the table view
+                meals.append(meal)
+                // add the meal to the tableView
+                tableView.insertRows(at: [newIndexPath], with: .automatic)
+            }
             
         }
     }
