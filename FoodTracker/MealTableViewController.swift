@@ -18,10 +18,16 @@ class MealTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Load sample data.
-        loadSampleMeals()
-        
+        // Use the edit button item provided by the table view controller.
         navigationItem.leftBarButtonItem = editButtonItem
+        
+        // Load any saved meals, else load sample data
+        if let savedmeals = loadMeals() {
+            meals += savedmeals
+        } else {
+            // Load sample data.
+            loadSampleMeals()
+        }
 
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
@@ -75,6 +81,7 @@ class MealTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             meals.remove(at: indexPath.row)
+            saveMeals()
             // Delete the row from the data source
             tableView.deleteRows(at: [indexPath], with: .fade)
         } else if editingStyle == .insert {
@@ -157,6 +164,9 @@ class MealTableViewController: UITableViewController {
                 tableView.insertRows(at: [newIndexPath], with: .automatic)
             }
             
+            //Save the meals
+            saveMeals()
+            
         }
     }
     
@@ -185,6 +195,20 @@ class MealTableViewController: UITableViewController {
             let meal = safelyGenerateMealObject(name: object.name, photo: object.photo, rating: object.rating)
             meals.append(meal)
         }
+        
+    }
+    
+    private func saveMeals() {
+        let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(meals, toFile: Meal.ArchiveURL.path)
+        if isSuccessfulSave {
+            os_log("Meals successfully saved.", log: OSLog.default, type: .debug)
+        } else {
+            os_log("Failed to save meals...", log: OSLog.default, type: .debug)
+        }
+    }
+    
+    private func loadMeals() -> [Meal]? {
+        return NSKeyedUnarchiver.unarchiveObject(withFile: Meal.ArchiveURL.path) as? [Meal]
         
     }
 }
