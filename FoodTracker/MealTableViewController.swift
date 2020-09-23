@@ -18,6 +18,9 @@ class MealTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Since this app behaves poorly in iOS 13 Dark Mode, in this and all view controllers, we should select light mode for the interface regardless of the user's current OS setting
+        overrideUserInterfaceStyle = .light
+        
         // Use the edit button item provided by the table view controller.
         navigationItem.leftBarButtonItem = editButtonItem
         
@@ -199,12 +202,19 @@ class MealTableViewController: UITableViewController {
     }
     
     private func saveMeals() {
-        let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(meals, toFile: Meal.ArchiveURL.path)
-        if isSuccessfulSave {
-            os_log("Meals successfully saved.", log: OSLog.default, type: .debug)
-        } else {
-            os_log("Failed to save meals...", log: OSLog.default, type: .debug)
+        do {
+        let mealsData = try NSKeyedArchiver.archivedData(withRootObject: meals, requiringSecureCoding: true)
+        } catch {
+            os_log("Unable to encode meals due to error: %s", log: OSLog.default, type: .error, error as CVarArg)
         }
+        // let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(meals, toFile: Meal.ArchiveURL.path)
+//        if isSuccessfulSave {
+//            os_log("Meals successfully saved.", log: OSLog.default, type: .debug)
+//        } else {
+//            os_log("Failed to save meals...", log: OSLog.default, type: .debug)
+//        }
+        
+        
     }
     
     private func loadMeals() -> [Meal]? {

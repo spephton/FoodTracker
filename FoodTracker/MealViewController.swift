@@ -25,6 +25,11 @@ class MealViewController: UIViewController, UITextFieldDelegate, UINavigationCon
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Since this app behaves poorly in iOS 13 Dark Mode, in this and all view controllers, we should select light mode for the interface regardless of the user's current OS setting
+        overrideUserInterfaceStyle = .light
+        
+        
         // Handle the text field's user input through delegate callbacks
         nameTextField.delegate = self
         
