@@ -21,6 +21,10 @@ class MealTableViewController: UITableViewController {
         // Since this app behaves poorly in iOS 13 Dark Mode, in this and all view controllers, we should select light mode for the interface regardless of the user's current OS setting
         overrideUserInterfaceStyle = .light
         
+        // I used this code to double-check that the CVarArgs parameter of os_log does what I think it does. It did, and printed: "User interface style set to geese"
+        // let testString = "geese"
+        // os_log("User interface style set to %s", log: OSLog.default, type: .debug, testString)
+        
         // Use the edit button item provided by the table view controller.
         navigationItem.leftBarButtonItem = editButtonItem
         
@@ -203,22 +207,60 @@ class MealTableViewController: UITableViewController {
     
     private func saveMeals() {
         do {
-        let mealsData = try NSKeyedArchiver.archivedData(withRootObject: meals, requiringSecureCoding: true)
+            // Encode meals into a data object
+            let mealsData = try NSKeyedArchiver.archivedData(withRootObject: meals, requiringSecureCoding: false) // requiringSecureCoding: true threw an exception and I don't know why -- jacob
+            // Write that data to the archive location in the documents folder
+            try mealsData.write(to: Meal.ArchiveURL)
+            os_log("saving", log: OSLog.default, type: .debug) // debug: is the save occuring? UPDATE: yes
         } catch {
-            os_log("Unable to encode meals due to error: %s", log: OSLog.default, type: .error, error as CVarArg)
+            os_log("Unable to encode/save meals due to error", log: OSLog.default, type: .error)
         }
-        // let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(meals, toFile: Meal.ArchiveURL.path)
-//        if isSuccessfulSave {
-//            os_log("Meals successfully saved.", log: OSLog.default, type: .debug)
-//        } else {
-//            os_log("Failed to save meals...", log: OSLog.default, type: .debug)
-//        }
         
+        /* DEPRECATED SAVE IMPLEMENTATION
+         let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(meals, toFile: Meal.ArchiveURL.path)
+         if isSuccessfulSave {
+              os_log("Meals successfully saved.", log: OSLog.default, type: .debug)
+         } else {
+              os_log("Failed to save meals...", log: OSLog.default, type: .debug)
+         }
+        */
         
     }
     
     private func loadMeals() -> [Meal]? {
-        return NSKeyedUnarchiver.unarchiveObject(withFile: Meal.ArchiveURL.path) as? [Meal]
         
+        // this may be unneccessary, as Data(contentsOf will throw if the file does not exist
+        if !FileManager.default.fileExists(atPath: Meal.ArchiveURL.absoluteString) {
+            os_log("Attempted to load from ` %s ` but no such file exists, aborting load.", log: OSLog.default, type: .debug, Meal.ArchiveURL.absoluteString)
+            return nil
+        }
+        
+        // Declared here for scope reasons (do blocks create new local scope)
+        var mealsData: Data
+        var mealsArray: [Meal]
+        
+        do {
+            // Load data from file
+            mealsData = try Data(contentsOf: Meal.ArchiveURL)
+            os_log("loading", log: OSLog.default, type: .debug) // attempting to work out why load does not produce saved meal list
+        } catch {
+            // Scoured what documentation I could find for logging levels and I think that .error is the correct level if data cannot be retrieved
+            os_log("Failed to load meals data with error", log: OSLog.default, type: .error)
+            return nil
+        }
+        
+        do {
+            // Decode data
+            mealsArray = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(mealsData) as! [Meal]
+        } catch {
+            os_log("Failed to unarchive loaded data with error", log: OSLog.default, type: .error)
+            return nil
+        }
+        
+        return mealsArray
+        
+        /* DEPRECATED LOAD IMPLEMENTATION
+        return NSKeyedUnarchiver.unarchiveObject(withFile: Meal.ArchiveURL.path) as? [Meal]
+        */
     }
 }
