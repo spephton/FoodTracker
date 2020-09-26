@@ -211,7 +211,6 @@ class MealTableViewController: UITableViewController {
             let mealsData = try NSKeyedArchiver.archivedData(withRootObject: meals, requiringSecureCoding: false) // requiringSecureCoding: true threw an exception and I don't know why -- jacob
             // Write that data to the archive location in the documents folder
             try mealsData.write(to: Meal.ArchiveURL)
-            os_log("saving", log: OSLog.default, type: .debug) // debug: is the save occuring? UPDATE: yes
         } catch {
             os_log("Unable to encode/save meals due to error", log: OSLog.default, type: .error)
         }
@@ -229,22 +228,21 @@ class MealTableViewController: UITableViewController {
     
     private func loadMeals() -> [Meal]? {
         
-        // this may be unneccessary, as Data(contentsOf will throw if the file does not exist
-        if !FileManager.default.fileExists(atPath: Meal.ArchiveURL.absoluteString) {
-            os_log("Attempted to load from ` %s ` but no such file exists, aborting load.", log: OSLog.default, type: .debug, Meal.ArchiveURL.absoluteString)
+        // Should be called when the app is run on a clean install. This avoids throwing an error at Data(contentsOf:) in the course of expected program flow
+        if !FileManager.default.fileExists(atPath: Meal.ArchiveURL.path) {
+            os_log("Attempted to load from ` %s ` but no such file exists, aborting load.", log: OSLog.default, type: .debug, Meal.ArchiveURL.path)
             return nil
-        }
+        } // This code was problematic before since fileExists expects a .path rather than an .absoluteString (the difference is that .absoluteString prepends file: followed by two forward slashes). Since the path was in an unexpected format, fileExists was always false, so the if branch was always taken and the function would return nil before the load could be performed.
         
-        // Declared here for scope reasons (do blocks create new local scope)
+        // Declared here for scope reasons ('do' blocks create new local scope)
         var mealsData: Data
         var mealsArray: [Meal]
         
         do {
             // Load data from file
             mealsData = try Data(contentsOf: Meal.ArchiveURL)
-            os_log("loading", log: OSLog.default, type: .debug) // attempting to work out why load does not produce saved meal list
         } catch {
-            // Scoured what documentation I could find for logging levels and I think that .error is the correct level if data cannot be retrieved
+            // Scoured what documentation I could find for logging levels and I think that .error is the correct level if data cannot be retrieved.
             os_log("Failed to load meals data with error", log: OSLog.default, type: .error)
             return nil
         }
