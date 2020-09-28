@@ -77,4 +77,5 @@ class Meal: NSObject, NSCoding {
         // Must call designated initializer
         self.init(name: name, photo: photo, rating: rating)
     }
+    // Let's pretend that this comment is some other code required by our meal method that changed on 'master' while I was working on my new feature
 }
