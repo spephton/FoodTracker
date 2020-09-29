@@ -15,7 +15,6 @@ class MealTableViewController: UITableViewController {
     //MARK: Properties
     var meals = [Meal]()
     
-    // this is a comment added purely to diverge the files on this computer from those on origin/master, to learn more about git 
         
     override func viewDidLoad() {
         super.viewDidLoad()
