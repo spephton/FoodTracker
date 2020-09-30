@@ -33,8 +33,8 @@ class MealViewController: UIViewController, UITextFieldDelegate, UINavigationCon
         // Handle the text field's user input through delegate callbacks
         nameTextField.delegate = self
         
-        // Enable the save button only if the text field has a valid Meal name
-        updateSaveButtonState()
+        // Save button should be greyed out until changes are made.
+        disableSaveButton()
         
         // Set up views if editing an existing meal
         if let meal = meal {
@@ -125,11 +125,30 @@ class MealViewController: UIViewController, UITextFieldDelegate, UINavigationCon
     
     //MARK: Private methods
     
-    
+    // Enable the save button if new, valid meal data is present
     private func updateSaveButtonState() {
-        // Disable the Save button if the text field is empty
+        // If no meal exists, we are creating a new meal and can try to enable the save button. If a meal exists, we must check that the name or rating has changed before enabling the save button, and disable the save button if nothing has changed
+        
+        if meal == nil {
+            safelyEnableSaveButton()
+            
+        } else if meal!.name != nameTextField.text || meal!.rating != ratingControl.rating {
+            // ^^ force-unwrap, because we just checked that a meal exists
+            safelyEnableSaveButton()
+            
+        } else { // a meal exists and neither the name nor the rating has changed
+            disableSaveButton()
+        }
+    }
+    
+    private func safelyEnableSaveButton() {
+        // call safelyEnableSB or disableSB instead of modifying save button state. This ensures the save button is never enabled if the name text field is empty, since all meals MUST have a name.
         let text = nameTextField.text ?? ""
         saveButton.isEnabled = !text.isEmpty
+    }
+    
+    private func disableSaveButton() {
+        saveButton.isEnabled = false
     }
     
 
