@@ -77,6 +77,9 @@ class MealViewController: UIViewController, UITextFieldDelegate, UINavigationCon
         }
         photoImageView.image = selectedImage
         dismiss(animated: true, completion: nil)
+        
+        // Try to enable the save button. Checking for a change in the photo selected is probably on the same order, performance wise, as saving the meal, so it's probably better to just enable save every time the image picker returns an image: the performance-heavy code is going to run a subset of the times a user selects a new image this way, and keeps the interface fluid
+        safelyEnableSaveButton()
     }
     
     //MARK: RatingControlDelegate
