@@ -9,7 +9,7 @@
 import UIKit
 import os.log // import OSFrog lul
 
-class MealViewController: UIViewController, UITextFieldDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+class MealViewController: UIViewController, UITextFieldDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, RatingControlDelegate {
     //MARK: Properties
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var photoImageView: UIImageView!
@@ -32,6 +32,9 @@ class MealViewController: UIViewController, UITextFieldDelegate, UINavigationCon
         
         // Handle the text field's user input through delegate callbacks
         nameTextField.delegate = self
+        
+        // Handle the rating control's user input through delegate callbacks
+        ratingControl.delegate = self
         
         // Save button should be greyed out until changes are made.
         disableSaveButton()
@@ -74,6 +77,13 @@ class MealViewController: UIViewController, UITextFieldDelegate, UINavigationCon
         }
         photoImageView.image = selectedImage
         dismiss(animated: true, completion: nil)
+    }
+    
+    //MARK: RatingControlDelegate
+    
+    // whenever the rating button is tapped, we potentially want to enable the save button
+    func ratingHasChanged() {
+        updateSaveButtonState()
     }
     
     //MARK: Navigation

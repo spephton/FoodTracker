@@ -8,10 +8,17 @@
 
 import UIKit
 
+// declare a delegate protocol so RatingControl can notify the containing view controller when the rating is updated
+protocol RatingControlDelegate {
+    func ratingHasChanged()
+}
+
 @IBDesignable class RatingControl: UIStackView {
     
     //MARK: Properties
     private var ratingButtons = [UIButton]() // the parens at the end are more or less exactly the same as the parens at the end of a class instantiation, afaict. this is analogous to var ratingButton = UIButton(), but we're doing an array of them. I think, in this context, the pair of parens is called a 'constructor' -- it calls a subroutine to create an object, in this case, an array of a class.
+    
+    var delegate: RatingControlDelegate?
     
     var rating = 0 {
         didSet {
@@ -58,6 +65,9 @@ import UIKit
             // otherwise we set the rating to the selected star
             rating = selectedRating
         }
+        
+        //let the delegate know that the rating has changed (if a delegate is present)
+        delegate?.ratingHasChanged()
         
     }
     
