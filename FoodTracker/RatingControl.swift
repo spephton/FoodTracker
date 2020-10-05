@@ -115,13 +115,46 @@ protocol RatingControlDelegate {
             // Add the new button to the rating button array
             ratingButtons.append(button)
         }
+        
+        // append a "not available" button to the button array
+        do {
+            let button = UIButton()
+            
+            // set display and per-state appearance
+            button.setTitle("N/A", for: .normal)
+            button.setTitleColor(.black, for: .normal)
+            button.setTitleColor(.systemBlue, for: .highlighted)
+            button.setTitleColor(.red, for: .selected)
+            
+            // constrain
+            button.translatesAutoresizingMaskIntoConstraints = false
+            button.heightAnchor.constraint(equalToConstant: starSize.height).isActive = true
+            button.widthAnchor.constraint(equalToConstant: starSize.width).isActive = true
+            
+            button.accessibilityLabel = "Set \"Not Applicable\" rating"
+            
+            // add action
+            button.addTarget(self, action: #selector(RatingControl.ratingButtonTapped(button:)), for: .touchUpInside)
+            
+            // add to the stack, and ratingButtons array
+            addArrangedSubview(button)
+            ratingButtons.append(button)
+            
+        }
+        
         updateButtonSelectionStates()
     }
     
     private func updateButtonSelectionStates() {
         for (index, button) in ratingButtons.enumerated() {
             // if the index of a button is less than the rating, that button should be selected
-            button.isSelected = index < rating
+            if rating == starCount + 1 {
+                // starCount + 1 is the rating set when "not available" is the selected rating, clear all buttons except the N/A button
+                button.isSelected = !(index < rating - 1)
+            } else {
+                // the rating is a normal star rating
+                button.isSelected = index < rating
+            }
             
             // Set the hint string for the currently selected star
             let hintString: String?
