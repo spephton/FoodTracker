@@ -43,6 +43,15 @@ class MealTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // if we've returned from a meal entry, reload it, in case it's been changed
+        if let selectedIndexPath = tableView.indexPathForSelectedRow {
+            tableView.reloadRows(at: [selectedIndexPath], with: .automatic)
+        }
+    }
 
     // MARK: - Table view data source
 
@@ -161,7 +170,7 @@ class MealTableViewController: UITableViewController {
             //Check whether a row of the tableView is selected. If so, we're editing an existing meal. Load our edits to the table view. If not, the user has created a new meal, so we add it to the end of the table view
             if let selectedIndexPaths = tableView.indexPathsForSelectedRows {
                 meals[selectedIndexPaths[0].row] = meal
-                tableView.reloadRows(at: selectedIndexPaths, with: .none) // probably what's causing the warning? is there some later point in the segue lifecycle where we can do this? Or maybe change the button action so that it calls an action method in meal view controller, which pops MealView off the nav stack before passing the segue?
+                // tableView.reloadRows(at: selectedIndexPaths, with: .none) // Commented out, as this reload has been moved to viewDidAppear(_:)
             } else {
                 
                 // our path to the new meal insertion in the table view. We'll add at the position meals.count, which should be one after the last item in the list (since addressing begins at zero and count begins at one), and section 0 since there is only one section.
