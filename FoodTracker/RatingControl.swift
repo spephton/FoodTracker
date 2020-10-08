@@ -17,8 +17,18 @@ protocol RatingControlDelegate {
     
     //MARK: Properties
     private var ratingButtons = [UIButton]() // the parens at the end are more or less exactly the same as the parens at the end of a class instantiation, afaict. this is analogous to var ratingButton = UIButton(), but we're doing an array of them. I think, in this context, the pair of parens is called a 'constructor' -- it calls a subroutine to create an object, in this case, an array of a class.
+
     
     var delegate: RatingControlDelegate?
+    
+    
+    // Default to a large interactive display mode that lets users alter the rating by pressing on the star buttons. If there's not enough space and only display, not control, of rating is required, an alternative display mode can be accessed by changing this property to false. The alternative mode takes up two stars worth of space, and displays a filled star with "x\(rating)" besides it to represent multiple. For example. a three star rating would be represented by filledStar x3 to the user.
+    var largeInteractiveDisplayMode: Bool = true {
+        didSet {
+            setupButtons()
+        }
+    }
+
     
     var rating = 0 {
         didSet {
@@ -88,63 +98,99 @@ protocol RatingControlDelegate {
         let emptyStar = UIImage(named: "emptyStar", in: bundle, compatibleWith: self.traitCollection)
         let highlightedStar = UIImage(named: "highlightedStar", in: bundle, compatibleWith: self.traitCollection)
         
-        for index in 0 ..< starCount {
-            // create the button
-            let button = UIButton()
-            button.setImage(emptyStar, for: .normal)
-            button.setImage(filledStar, for: .selected)
-            button.setImage(highlightedStar, for: .highlighted)
-            button.setImage(highlightedStar, for: [.highlighted, .selected])
-            // constrain button
-            button.translatesAutoresizingMaskIntoConstraints = false
-            button.heightAnchor.constraint(equalToConstant: starSize.height).isActive = true
-            button.widthAnchor.constraint(equalToConstant: starSize.width).isActive = true
+        if largeInteractiveDisplayMode {
+            for index in 0 ..< starCount {
+                // create the button
+                let button = UIButton()
+                button.setImage(emptyStar, for: .normal)
+                button.setImage(filledStar, for: .selected)
+                button.setImage(highlightedStar, for: .highlighted)
+                button.setImage(highlightedStar, for: [.highlighted, .selected])
+                // constrain button
+                button.translatesAutoresizingMaskIntoConstraints = false
+                button.heightAnchor.constraint(equalToConstant: starSize.height).isActive = true
+                button.widthAnchor.constraint(equalToConstant: starSize.width).isActive = true
+                
+                // Add accessibility labels
+                button.accessibilityLabel = "Set \(index + 1) star rating"
+                
+                // Setup the button action
+                button.addTarget(self, action: #selector(RatingControl.ratingButtonTapped(button:)), for: .touchUpInside) // "A selector is an opaque value that identifies the method. Older APIs used selectors to dynamically invoke methods at runtime." replaced in newer APIs with blocks.
+                // In the target-action design pattern, 'self' is the target (object with associated action method). In this context, self is the RatingControl instance that is created by the operating system when the app is run. The action method is 'ratingButtonTapped(button:)', which responds to an event on sender UIButton 'button'.
+                // In summary, the target is the RatingControl instance, and the action is ratingButtonTapped(
+                
+                
+                //add button to the stack
+                addArrangedSubview(button)
+                
+                // Add the new button to the rating button array
+                ratingButtons.append(button)
+            }
+        } else {
+            // the alternative to five interactive star buttons is a compact view that displays a filled star times the rating. This takes up the space of two stars, and is not interactive.
             
-            // Add accessibility labels
-            button.accessibilityLabel = "Set \(index + 1) star rating"
-        
-            // Setup the button action
-            button.addTarget(self, action: #selector(RatingControl.ratingButtonTapped(button:)), for: .touchUpInside) // "A selector is an opaque value that identifies the method. Older APIs used selectors to dynamically invoke methods at runtime." replaced in newer APIs with blocks.
-            // In the target-action design pattern, 'self' is the target (object with associated action method). In this context, self is the RatingControl instance that is created by the operating system when the app is run. The action method is 'ratingButtonTapped(button:)', which responds to an event on sender UIButton 'button'.
-            // In summary, the target is the RatingControl instance, and the action is ratingButtonTapped(
-        
-        
-            //add button to the stack
-            addArrangedSubview(button)
+            for i in 0 ... 1 {
+                let button = UIButton()
+                if i == 0 {
+                    button.setImage(filledStar, for: .normal)
+                } else {
+                    button.setTitle("NUL", for: .normal) // display something if this is initialised, but not set, so that the error is obvious. Nobody should see this, since we call updateButtonSelectionStates once we've set the buttons up.
+                    button.setTitleColor(.black, for: .normal)
+                    button.titleLabel?.adjustsFontSizeToFitWidth = true
+                }
+                
+                // constrain button
+                button.translatesAutoresizingMaskIntoConstraints = false
+                button.heightAnchor.constraint(equalToConstant: starSize.height).isActive = true
+                button.widthAnchor.constraint(equalToConstant: starSize.width).isActive = true
+                
+                //add button to the stack
+                addArrangedSubview(button)
+                
+                // Add the new button to the rating button array
+                ratingButtons.append(button)
+            }
             
-            // Add the new button to the rating button array
-            ratingButtons.append(button)
+            
         }
         updateButtonSelectionStates()
     }
     
     private func updateButtonSelectionStates() {
         for (index, button) in ratingButtons.enumerated() {
-            // if the index of a button is less than the rating, that button should be selected
-            button.isSelected = index < rating
             
-            // Set the hint string for the currently selected star
-            let hintString: String?
-            if rating == index + 1 {
-                hintString = "Tap to reset the rating to zero"
+            if largeInteractiveDisplayMode {
+                // if the index of a button is less than the rating, that button should be selected
+                button.isSelected = index < rating
+                
+                // Set the hint string for the currently selected star
+                let hintString: String?
+                if rating == index + 1 {
+                    hintString = "Tap to reset the rating to zero"
+                } else {
+                    hintString = nil
+                }
+                
+                // Calculate the value string
+                let valueString: String
+                switch (rating) {
+                case 0:
+                    valueString = "No rating set."
+                case 1:
+                    valueString = "1 star set."
+                default:
+                    valueString = "\(rating) stars set"
+                }
+                
+                // Assign both strings to the button
+                button.accessibilityHint = hintString
+                button.accessibilityValue = valueString
             } else {
-                hintString = nil
+                if index == 1 { // compact display mode
+                    button.setTitle("x\(rating)", for: .normal) // Display the rating in the second button of the array
+                    button.accessibilityValue = "\(rating) star rating set."
+                }
             }
-            
-            // Calculate the value string
-            let valueString: String
-            switch (rating) {
-            case 0:
-                valueString = "No rating set."
-            case 1:
-                valueString = "1 star set."
-            default:
-                valueString = "\(rating) stars set"
-            }
-            
-            // Assign both strings to the button
-            button.accessibilityHint = hintString
-            button.accessibilityValue = valueString
         }
     }
 }

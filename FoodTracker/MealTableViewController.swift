@@ -170,7 +170,7 @@ class MealTableViewController: UITableViewController {
             //Check whether a row of the tableView is selected. If so, we're editing an existing meal. Load our edits to the table view. If not, the user has created a new meal, so we add it to the end of the table view
             if let selectedIndexPaths = tableView.indexPathsForSelectedRows {
                 meals[selectedIndexPaths[0].row] = meal
-                // tableView.reloadRows(at: selectedIndexPaths, with: .none) // Commented out, as this reload has been moved to viewDidAppear(_:)
+                tableView.reloadRows(at: selectedIndexPaths, with: .none) // Commented out, as this reload has been moved to viewDidAppear(_:) // for some reason, this stopped working. I was almost sure it was working before?? Had to re-fix. Warning's back, but it don't matter. 
             } else {
                 
                 // our path to the new meal insertion in the table view. We'll add at the position meals.count, which should be one after the last item in the list (since addressing begins at zero and count begins at one), and section 0 since there is only one section.

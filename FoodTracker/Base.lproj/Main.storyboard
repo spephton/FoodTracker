@@ -50,7 +50,6 @@
                                 <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="umD-je-qHI" secondAttribute="trailing" id="25Z-DP-uEV"/>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="414" id="gMO-Jt-F0i"/>
                                 </constraints>
                             </stackView>
                         </subviews>
