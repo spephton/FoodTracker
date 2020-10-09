@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1601C388253029E2006B5690 /* MealDisplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1601C387253029E2006B5690 /* MealDisplayViewController.swift */; };
 		1603577D250FAD4E005EE799 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1603577C250FAD4E005EE799 /* AppDelegate.swift */; };
 		1603577F250FAD4E005EE799 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1603577E250FAD4E005EE799 /* SceneDelegate.swift */; };
 		16035781250FAD4E005EE799 /* MealViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16035780250FAD4E005EE799 /* MealViewController.swift */; };
@@ -32,6 +33,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1601C387253029E2006B5690 /* MealDisplayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealDisplayViewController.swift; sourceTree = "<group>"; };
 		16035779250FAD4E005EE799 /* FoodTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FoodTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1603577C250FAD4E005EE799 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1603577E250FAD4E005EE799 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -98,6 +100,7 @@
 				161F36B625133AF700330271 /* Meal.swift */,
 				161F36BA25137F9400330271 /* MealTableViewCell.swift */,
 				16035782250FAD4E005EE799 /* Main.storyboard */,
+				1601C387253029E2006B5690 /* MealDisplayViewController.swift */,
 				16035785250FAD51005EE799 /* Assets.xcassets */,
 				16035787250FAD51005EE799 /* LaunchScreen.storyboard */,
 				1603578A250FAD51005EE799 /* Info.plist */,
@@ -222,6 +225,7 @@
 				161F36BB25137F9400330271 /* MealTableViewCell.swift in Sources */,
 				16035781250FAD4E005EE799 /* MealViewController.swift in Sources */,
 				1603577D250FAD4E005EE799 /* AppDelegate.swift in Sources */,
+				1601C388253029E2006B5690 /* MealDisplayViewController.swift in Sources */,
 				1603577F250FAD4E005EE799 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

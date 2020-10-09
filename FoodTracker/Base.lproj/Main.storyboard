@@ -194,6 +194,45 @@
             </objects>
             <point key="canvasLocation" x="1282" y="-215"/>
         </scene>
+        <!--Meal Display View Controller-->
+        <scene sceneID="P9I-G2-a8f">
+            <objects>
+                <viewController id="3AR-3k-UKx" customClass="MealDisplayViewController" customModule="FoodTracker" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" ambiguous="YES" id="uI9-Ek-zr4">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" translatesAutoresizingMaskIntoConstraints="NO" id="jjS-7y-rcK">
+                                <rect key="frame" x="8" y="16" width="220" height="364.5"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rac-sN-Thd" customClass="MealNameLabel">
+                                        <rect key="frame" x="0.0" y="0.0" width="220" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" placeholderIntrinsicWidth="300" placeholderIntrinsicHeight="300" image="defaultPhoto" translatesAutoresizingMaskIntoConstraints="NO" id="H7C-8X-zdq">
+                                        <rect key="frame" x="0.0" y="20.5" width="220" height="300"/>
+                                    </imageView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6Ue-TO-gDe" customClass="RatingControl" customModule="FoodTracker" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="320.5" width="220" height="44"/>
+                                    </stackView>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="0PM-y5-WrW"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="0PM-y5-WrW" firstAttribute="trailing" secondItem="jjS-7y-rcK" secondAttribute="trailing" constant="8" id="9rl-tY-BMN"/>
+                            <constraint firstItem="jjS-7y-rcK" firstAttribute="leading" secondItem="0PM-y5-WrW" secondAttribute="leading" constant="8" id="DkF-X0-dKG"/>
+                            <constraint firstItem="jjS-7y-rcK" firstAttribute="top" secondItem="0PM-y5-WrW" secondAttribute="top" constant="16" id="fh2-G6-vkJ"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="qw6-M3-i98" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2381.5999999999999" y="-678.71064467766121"/>
+        </scene>
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="jRd-FB-fCf"/>

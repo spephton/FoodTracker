@@ -118,7 +118,7 @@ class MealViewController: UIViewController, UITextFieldDelegate, UINavigationCon
         let rating = ratingControl.rating
         
         //Set the meal to be passed to MealTableViewController after the unwind segue
-        meal = Meal(name: name, photo: photo, rating: rating)
+        meal = Meal(name: name, photo: photo, rating: rating) // we pass to MealTableViewController where the save occurs. Perhaps make saving happen every time a property changes? Name, photo, rating. [0, 0, 0]. Typically, stack navigation involves non-editable detail displays though, and editing is accomplished through an edit mode. While I'll go for this pattern in future apps, I can't be assed messing with too much at the moment... nah maybe I should just do that? That would involve making a mealDisplayViewController corresponding to a non-interactive mealDisplayView, that has an edit button. 
         
     }
     
