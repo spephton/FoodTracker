@@ -88,7 +88,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="2186" y="-233"/>
+            <point key="canvasLocation" x="3086" y="-200"/>
         </scene>
         <!--Your Meals-->
         <scene sceneID="eRK-lK-oui">
@@ -192,7 +192,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pdz-PF-vFj" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1282" y="-215"/>
+            <point key="canvasLocation" x="2338" y="-200"/>
         </scene>
         <!--Meal Display View Controller-->
         <scene sceneID="P9I-G2-a8f">
@@ -205,7 +205,7 @@
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="18" translatesAutoresizingMaskIntoConstraints="NO" id="jjS-7y-rcK">
                                 <rect key="frame" x="8" y="68" width="359" height="409"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rac-sN-Thd" customClass="MealNameLabel">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rac-sN-Thd">
                                         <rect key="frame" x="151" y="0.0" width="57" height="29"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                         <nil key="textColor"/>
@@ -231,7 +231,13 @@
                             <constraint firstItem="jjS-7y-rcK" firstAttribute="top" secondItem="0PM-y5-WrW" secondAttribute="top" constant="24" id="fh2-G6-vkJ"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="FEs-Jw-uuv"/>
+                    <navigationItem key="navigationItem" id="FEs-Jw-uuv">
+                        <barButtonItem key="rightBarButtonItem" style="plain" systemItem="edit" id="zZq-BP-dx8">
+                            <connections>
+                                <segue destination="riS-Kf-ucV" kind="presentation" id="Ge1-Bb-ees"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="nameLabel" destination="rac-sN-Thd" id="Acj-lY-v3f"/>
                         <outlet property="photoImageView" destination="H7C-8X-zdq" id="Cb7-Mw-D69"/>
@@ -240,9 +246,12 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qw6-M3-i98" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1604" y="484"/>
+            <point key="canvasLocation" x="1335" y="436"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="Ge1-Bb-ees"/>
+    </inferredMetricsTieBreakers>
     <resources>
         <image name="defaultPhoto" width="540" height="540"/>
         <systemColor name="systemBackgroundColor">

@@ -238,8 +238,9 @@ class MealTableViewController: UITableViewController {
     
     private func loadMeals() -> [Meal]? {
         
-        // Should be called when the app is run on a clean install. This avoids throwing an error at Data(contentsOf:) in the course of expected program flow
+
         if !FileManager.default.fileExists(atPath: Meal.ArchiveURL.path) {
+            // Should be called when the app is run on a clean install. This avoids throwing an error at Data(contentsOf:) in the course of expected program flow
             os_log("Attempted to load from ` %s ` but no such file exists, aborting load.", log: OSLog.default, type: .debug, Meal.ArchiveURL.path)
             return nil
         } // This code was problematic before since fileExists expects a .path rather than an .absoluteString (the difference is that .absoluteString prepends file: followed by two forward slashes). Since the path was in an unexpected format, fileExists was always false, so the if branch was always taken and the function would return nil before the load could be performed.

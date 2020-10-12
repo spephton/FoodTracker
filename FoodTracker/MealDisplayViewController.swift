@@ -9,7 +9,7 @@
 import UIKit
 import os.log
 
-class MealDisplayViewController: UIViewController {
+class MealDisplayViewController: UIViewController, MealViewControllerDelegate {
 
     
     // MARK: Properties
@@ -42,15 +42,29 @@ class MealDisplayViewController: UIViewController {
         }
     }
     
-
-    /*
+    // MARK: MealViewControllerDelegate
+    
+    func provideMealObject() -> Meal? {
+        return meal
+    }
+    
+    
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        super.prepare(for: segue, sender: sender)
         // Get the new view controller using segue.destination.
         // Pass the selected object to the new view controller.
+        if let destination = segue.destination as? MealViewController {
+            print("hewwo >.<")
+            destination.meal = meal
+        } else {
+            // let destinationType = type(of: segue.destination)
+            // print(destinationType)
+        }
     }
-    */
+    
 
 }
