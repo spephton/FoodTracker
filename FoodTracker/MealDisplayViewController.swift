@@ -7,13 +7,39 @@
 //
 
 import UIKit
+import os.log
 
 class MealDisplayViewController: UIViewController {
 
+    
+    // MARK: Properties
+    @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var photoImageView: UIImageView!
+    @IBOutlet weak var ratingControl: RatingControl!
+    
+    /*
+     This value is either passed by `MealTableViewController` in
+        `prepare(for:sender:)`
+     or constructed as part of adding a new meal.
+     */
+    var meal: Meal?
+    
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        // This view requires a meal object to display. If no meal exists, error.
+        if let meal = meal {
+            navigationItem.title = "Meal Details"
+            nameLabel.text = meal.name
+            photoImageView.image = meal.photo
+            ratingControl.rating = meal.rating
+            ratingControl.isUserInteractionEnabled = false
+        } else {
+            os_log("Display controller was not passed valid meal object to display.", log: .default, type: .error)
+        }
     }
     
 
