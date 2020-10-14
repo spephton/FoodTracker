@@ -9,7 +9,7 @@
 import UIKit
 import os.log
 
-class MealDisplayViewController: UIViewController, MealViewControllerDelegate {
+class MealDisplayViewController: UIViewController {
 
     
     // MARK: Properties
@@ -29,7 +29,8 @@ class MealDisplayViewController: UIViewController, MealViewControllerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        overrideUserInterfaceStyle = .light
         // This view requires a meal object to display. If no meal exists, error.
         if let meal = meal {
             navigationItem.title = "Meal Details"
@@ -42,11 +43,7 @@ class MealDisplayViewController: UIViewController, MealViewControllerDelegate {
         }
     }
     
-    // MARK: MealViewControllerDelegate
-    
-    func provideMealObject() -> Meal? {
-        return meal
-    }
+
     
     
     // MARK: - Navigation
@@ -57,13 +54,16 @@ class MealDisplayViewController: UIViewController, MealViewControllerDelegate {
         super.prepare(for: segue, sender: sender)
         // Get the new view controller using segue.destination.
         // Pass the selected object to the new view controller.
-        if let destination = segue.destination as? MealViewController {
-            print("hewwo >.<")
-            destination.meal = meal
-        } else {
-            // let destinationType = type(of: segue.destination)
-            // print(destinationType)
+        guard let destination = segue.destination as? UINavigationController else {
+            os_log("Destination is not a navigation controller.", log: .default, type: .error)
+            return
         }
+        guard let targetMealViewController = destination.viewControllers[0] as? MealViewController else {
+            os_log("Destination NavController does not contain a MealViewController as it's first view controller.", log: .default, type: .error)
+            return
+        }
+        targetMealViewController.meal = meal
+        targetMealViewController.didLoadFromDetailView(sender: self)
     }
     
 

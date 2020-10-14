@@ -166,11 +166,16 @@ class MealTableViewController: UITableViewController {
             Additionally, we check that sourceViewController.meal is non-nil, and if it is non-nil, meaning that there's a meal property defined in the sourceViewController, we assign that property to our constant `meal`.
          */
         if let sourceViewController = sender.source as? MealViewController, let meal = sourceViewController.meal {
-            
+            var previouslySelectedIndexPath: IndexPath?
+            var sourceLoadedFromDisplayView = false
             //Check whether a row of the tableView is selected. If so, we're editing an existing meal. Load our edits to the table view. If not, the user has created a new meal, so we add it to the end of the table view
             if let selectedIndexPaths = tableView.indexPathsForSelectedRows {
                 meals[selectedIndexPaths[0].row] = meal
-                tableView.reloadRows(at: selectedIndexPaths, with: .none) // Commented out, as this reload has been moved to viewDidAppear(_:) // for some reason, this stopped working. I was almost sure it was working before?? Had to re-fix. Warning's back, but it don't matter. 
+                tableView.reloadRows(at: selectedIndexPaths, with: .none)
+                sourceLoadedFromDisplayView = sourceViewController.didLoadFromDetailView()
+                if sourceLoadedFromDisplayView {
+                    previouslySelectedIndexPath = selectedIndexPaths[0] // have to fetch it here, since after the rows are reloaded, the selection is cleared.
+                }
             } else {
                 
                 // our path to the new meal insertion in the table view. We'll add at the position meals.count, which should be one after the last item in the list (since addressing begins at zero and count begins at one), and section 0 since there is only one section.
@@ -184,6 +189,15 @@ class MealTableViewController: UITableViewController {
             //Save the meals
             saveMeals()
             
+            // return to display view, if edit was spawned from display view
+            if sourceLoadedFromDisplayView {
+                // UI events need to be handled on the main queue
+                DispatchQueue.global(qos: .background).async {
+                    DispatchQueue.main.async {
+                        self.performSegue(withIdentifier: "ShowDetail", sender: self.tableView.cellForRow(at: previouslySelectedIndexPath!))
+                    }
+                }
+            }
         }
     }
     

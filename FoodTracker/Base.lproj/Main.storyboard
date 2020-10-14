@@ -232,7 +232,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="FEs-Jw-uuv">
-                        <barButtonItem key="rightBarButtonItem" style="plain" systemItem="edit" id="zZq-BP-dx8">
+                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="zZq-BP-dx8">
                             <connections>
                                 <segue destination="riS-Kf-ucV" kind="presentation" id="Ge1-Bb-ees"/>
                             </connections>
@@ -250,7 +250,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="Ge1-Bb-ees"/>
+        <segue reference="lQO-Wl-xsg"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="defaultPhoto" width="540" height="540"/>

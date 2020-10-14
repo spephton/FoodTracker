@@ -9,9 +9,6 @@
 import UIKit
 import os.log // import OSFrog lul
 
-protocol MealViewControllerDelegate {
-    func provideMealObject() -> Meal?
-}
 
 
 class MealViewController: UIViewController, UITextFieldDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, RatingControlDelegate {
@@ -27,8 +24,24 @@ class MealViewController: UIViewController, UITextFieldDelegate, UINavigationCon
      or constructed as part of adding a new meal.
      */
     var meal: Meal?
-    // permit fetching of data from a delegate, if one is present
-    var delegate: MealViewControllerDelegate?
+    
+    // Let MealTableViewController know if this view was loaded from a detail display view when we unwind and save
+    private var loadedFromDetailView = false
+    func resetLoadedFromDetailView() {  // should be called every time this controller is dismissed
+        loadedFromDetailView = false
+    }
+    func didLoadFromDetailView() -> Bool { // call this from MealTableViewController.unwindToMealList(sender:)
+        if loadedFromDetailView {
+            resetLoadedFromDetailView()
+            return true
+        }
+        return false
+    }
+    func didLoadFromDetailView(sender: UIViewController) { // pass "self" into this when called from a MDVC, double checks that sender is MDVC before setting flag
+        if sender is MealDisplayViewController {
+            loadedFromDetailView = true
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,9 +56,6 @@ class MealViewController: UIViewController, UITextFieldDelegate, UINavigationCon
         // Handle the rating control's user input through delegate callbacks
         ratingControl.delegate = self
         
-        // If the parent view's parent view is a delegate for this class, store a reference to it so we can use delegate methods
-        
-        print(nil == presentingViewController)
         
         // Save button should be greyed out until changes are made.
         disableSaveButton()
@@ -103,8 +113,15 @@ class MealViewController: UIViewController, UITextFieldDelegate, UINavigationCon
     //MARK: Navigation
     
     @IBAction func cancel(_ sender: UIBarButtonItem) {
-        // depending on the style of presentation (modal vs. push), this view controller needs to be dismissed in two different ways
-        let isPresentingInAddMealMode = presentingViewController is UINavigationController
+        
+        // ensure we reset our flag
+        resetLoadedFromDetailView()
+        // get outta here
+        dismiss(animated: true, completion: nil)
+        
+        /* can disregard this now, since we're only ever displaying modally?
+         // depending on the style of presentation (modal vs. push), this view controller needs to be dismissed in two different ways
+         let isPresentingInAddMealMode = presentingViewController is UINavigationController
         if isPresentingInAddMealMode {
             dismiss(animated: true, completion: nil)
         } else if let owningNavigationController = navigationController {
@@ -112,6 +129,7 @@ class MealViewController: UIViewController, UITextFieldDelegate, UINavigationCon
         } else {
             fatalError("The MealViewController is not inside a navigation controller.")
         }
+        */
     }
     
     
@@ -129,7 +147,7 @@ class MealViewController: UIViewController, UITextFieldDelegate, UINavigationCon
         let rating = ratingControl.rating
         
         //Set the meal to be passed to MealTableViewController after the unwind segue
-        meal = Meal(name: name, photo: photo, rating: rating) // we pass to MealTableViewController where the save occurs. Perhaps make saving happen every time a property changes? Name, photo, rating. [0, 0, 0]. Typically, stack navigation involves non-editable detail displays though, and editing is accomplished through an edit mode. While I'll go for this pattern in future apps, I can't be assed messing with too much at the moment... nah maybe I should just do that? That would involve making a mealDisplayViewController corresponding to a non-interactive mealDisplayView, that has an edit button.
+        meal = Meal(name: name, photo: photo, rating: rating) // we pass to MealTableViewController where the save occurs. Don't resetLoadedFromDetailView, since MTVC needs to know whether MVC was loaded from detailView (which it will do by calling sender.source.didLoadFromDetailView())
         
     }
     
